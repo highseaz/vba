@@ -20,6 +20,10 @@ Attribute VB_Name = "Build"
 ' 8. Close excel. Open excel with a new workbook, then open the just saved vbaDeveloper.xlam
 ' 9. Let vbaDeveloper import its own code. Put the cursor in the function 'testImport' and press F5
 ' 10.If necessary rename module 'Build1' to Build. Menu File-->Save vbaDeveloper.xlam
+
+
+
+
 '''
 
 Option Explicit
