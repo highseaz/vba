@@ -1,0 +1,133 @@
+```
+Option Explicit
+Public Sub SaveMessageAsMsg()
+  Dim oMail As Outlook.MailItem
+  Dim olItem As Object
+  
+  Dim sPath As String
+  Dim caseID As String
+    Dim FileName As String
+    Dim Count As Integer
+  Dim sName As String
+   
+   For Each olItem In ActiveExplorer.Selection
+        If olItem.Class = OlObjectClass.olMail Then
+             Set oMail = olItem
+                sName = oMail.Subject
+             Debug.Print sName
+             
+        caseID = ExtractStringByPatternFrom(sName)
+            Debug.Print caseID
+        If caseID = "" Then
+        MsgBox "ID not found in subject of the mail!"
+         sName = oMail.Body
+             Debug.Print sName
+              caseID = ExtractStringByPatternFrom(sName)
+               Debug.Print caseID
+               sName = caseID & "_" & oMail.Subject
+        End If
+        
+        sPath = findFolderwithKey(caseID)
+        
+        
+        FileName = Dir(sPath & "\*.msg")
+            Count = 1
+        Do While FileName <> ""
+            Count = Count + 1
+            FileName = Dir()
+        Loop
+        
+        ReplaceCharsForFileName sName, "_"
+        sName = Count & "-" & sName & ".msg"
+'  Debug.Print sPath & sName
+  oMail.SaveAs sPath & "\" & sName, olMSG
+'  olItem.Move Application.GetNamespace("MAPI").Folders("dragonip").Folders("Archive")
+        End If
+  
+  Next
+MsgBox "文件成功保存至：" & Chr(13) & Chr(13) & sPath & Chr(13) & Chr(13) & sName
+End Sub
+ 
+Private Sub ReplaceCharsForFileName(sName As String, _
+  sChr As String _
+)
+  sName = Replace(sName, "'", sChr)
+  sName = Replace(sName, "*", sChr)
+  sName = Replace(sName, "/", sChr)
+  sName = Replace(sName, "\", sChr)
+  sName = Replace(sName, ":", sChr)
+  sName = Replace(sName, "?", sChr)
+  sName = Replace(sName, Chr(34), sChr)
+  sName = Replace(sName, "<", sChr)
+  sName = Replace(sName, ">", sChr)
+  sName = Replace(sName, "|", sChr)
+End Sub
+
+Function findFolderwithKey(ByVal Key As String) As String
+
+Dim strFoundDir As String
+
+strFoundDir = Dir(BaseDir4workingFiles & "*" & Key & "*", vbDirectory)
+    If LenB(strFoundDir) > 0 Then
+        'Do the rest of your code
+        Debug.Print strFoundDir
+        findFolderwithKey = BaseDir4workingFiles & strFoundDir
+        Exit Function
+    End If
+    
+End Function
+
+Function ExtractStringByPatternFrom(ByVal text As String) As String
+    Dim result As String
+    Dim allMatches As Object
+    Dim RE As Object
+    Set RE = CreateObject("vbscript.regexp")
+    
+        RE.Pattern = "((OI)|(PI)|(PCT))+[A-Z]{0,3}[0-9]{6,7}(\([A-Z]{3}\))?(-E)?(CN)?"
+        RE.Global = True
+        RE.IgnoreCase = True
+    Set allMatches = RE.Execute(text)
+    
+    If allMatches.Count <> 0 Then
+    ' Debug.Print allMatches
+        result = allMatches.item(0)
+    End If
+    
+    ExtractStringByPatternFrom = result
+
+End Function
+
+'Public Sub SaveMessageAsMsg()
+'  Dim oMail As Outlook.MailItem
+'  Dim objItem As Object
+'  Dim sPath As String
+'  Dim dtDate As Date
+'  Dim sName As String
+'  Dim enviro As String
+'
+'    enviro = CStr(Environ("USERPROFILE"))
+'   For Each objItem In ActiveExplorer.Selection
+'   If objItem.MessageClass = "IPM.Note" Then
+'    Set oMail = objItem
+'
+'  sName = oMail.Subject
+'  ReplaceCharsForFileName sName, "_"
+'
+'  dtDate = oMail.ReceivedTime
+'  sName = Format(dtDate, "yyyymmdd", vbUseSystemDayOfWeek, _
+'    vbUseSystem) & Format(dtDate, "-hhnnss", _
+'    vbUseSystemDayOfWeek, vbUseSystem) & "-" & sName & ".msg"
+'
+'    sPath = enviro & "\desktop\"
+'  Debug.Print sPath & sName
+'  oMail.SaveAs sPath & sName, olMSG
+'
+'  End If
+'  Next
+'
+'End Sub
+'
+
+```
+
+> Written with [StackEdit](https://stackedit.io/).
