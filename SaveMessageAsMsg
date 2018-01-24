@@ -1,3 +1,4 @@
+
 ```
 Option Explicit
 Public Sub SaveMessageAsMsg()
@@ -45,7 +46,7 @@ Public Sub SaveMessageAsMsg()
         End If
   
   Next
-MsgBox "文件成功保存至：" & Chr(13) & Chr(13) & sPath & Chr(13) & Chr(13) & sName
+MsgBox "file has been successfully saved in ：" & Chr(13) & Chr(13) & sPath & Chr(13) & Chr(13) & sName
 End Sub
  
 Private Sub ReplaceCharsForFileName(sName As String, _
